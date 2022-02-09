@@ -7,8 +7,8 @@ waste of time having to go back to a store upon realizing that one forgot to buy
 make shopper's lives easier, whether they are shopping online or in store.
 
 ## User Stories:
-- As a user, I want to be able to add an item having a title and a price to my shopping wish list
+- As a user, I want to be able to add an item having a title, price, quantity, and star rating to my shopping wish list
 - As a user, I want to be able to remove an item from my shopping wish list
-- As a user, I want to be able to view the list of the titles and prices of the items in my shopping wist list
-- As a user, I want to be able to select and rate an item in my shopping wish list on a scale of 1 to 5
+- As a user, I want to be able to view the list of the titles, prices, and quantities of the items in my shopping wist list
+- As a user, I want to be able to select and rate an item in my shopping wish list on a scale of 0 to 5 star
  
