@@ -77,6 +77,7 @@ public class ShoppingWishListTest {
         shoppingWishList = testShoppingWishList.getShoppingWishList();
         book = shoppingWishList.get(0);
         testShoppingWishList.decreaseQuantity(book, 2);
+        assertFalse(testShoppingWishList.containsProduct("book"));
         assertTrue(shoppingWishList.isEmpty());
     }
 
@@ -102,6 +103,7 @@ public class ShoppingWishListTest {
         shoppingWishList = testShoppingWishList.getShoppingWishList();
         book = shoppingWishList.get(0);
         assertTrue(testShoppingWishList.containsProduct("book"));
+        assertFalse(testShoppingWishList.containsProduct("pen"));
         testShoppingWishList.decreaseQuantity(book, 2);
         assertFalse(testShoppingWishList.containsProduct("book"));
     }
