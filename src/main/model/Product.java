@@ -18,7 +18,7 @@ public class Product {
         star = 0;
     }
 
-    // REQUIRES: 0 <= star <= 5
+    // REQUIRES: 0 <= star && star <= 5
     // MODIFIES: this
     // EFFECTS: rates a product from a scale of 0 to 5
     public void rateProduct(int star) {

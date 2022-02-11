@@ -12,39 +12,46 @@ public class ShoppingWishList {
         shoppingWishList = new ArrayList<>();
     }
 
-    // REQUIRES: quantity >= 1
-    // MODIFIES: this
-    // EFFECTS: adds a product to the shopping wish list, if the
-    // product is contained in the list, increase the quantity
-    // of product by the amount specified
-    public void addProduct(Product product, int quantity) {
-        if (containsProduct(product)) {
-            product.setQuantity(product.getQuantity() + quantity);
-        } else {
-            shoppingWishList.add(product);
-            product.setQuantity(quantity);
-        }
+    // REQUIRES: price > 0.0 && quantity >= 1
+    // MODIFIES: this, product
+    // EFFECTS: add a product with given title, price, and quantity
+    // to the shopping wish list
+    public void addProduct(String title, double price, int quantity) {
+        Product product = new Product(title, price);
+        product.setQuantity(quantity);
+        shoppingWishList.add(product);
+    }
+
+    // REQUIRES: quantity >= 1 && product is contained in list
+    // MODIFIES: this, product
+    // EFFECTS: increase the quantity of product by the amount specified
+    public void increaseQuantity(Product product, int quantity) {
+        product.setQuantity(product.getQuantity() + quantity);
     }
 
     // REQUIRES: getQuantity() <= quantity && quantity >= 1
     // && product is contained in the list
-    // MODIFIES: this
+    // MODIFIES: this, product
     // EFFECTS: if getQuantity() > quantity, decrease the quantity of the product
     // by the amount specified. If getQuantity() == quantity, remove the
-    // product from the shopping wish list, product quantity is set to 0
-    public void removeProduct(Product product, int quantity) {
+    // product from the shopping wish list
+    public void decreaseQuantity(Product product, int quantity) {
         if (product.getQuantity() > quantity) {
             product.setQuantity(product.getQuantity() - quantity);
         } else {
             shoppingWishList.remove(product);
-            product.setQuantity(0);
         }
     }
 
     // EFFECTS: return true if the product is contained in
     // the shopping wish list, otherwise return false
-    public boolean containsProduct(Product product) {
-        return shoppingWishList.contains(product);
+    public boolean containsProduct(String productTitle) {
+        for (Product next : shoppingWishList) {
+            if (next.getTitle().equals(productTitle)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public ArrayList<Product> getShoppingWishList() {

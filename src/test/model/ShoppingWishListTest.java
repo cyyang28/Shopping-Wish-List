@@ -13,81 +13,96 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ShoppingWishListTest {
     private ShoppingWishList testShoppingWishList;
     private ArrayList<Product> shoppingWishList;
-    private Product product1;
-    private Product product2;
+    private Product book;
 
     @BeforeEach
     void runBefore() {
         testShoppingWishList = new ShoppingWishList();
-        product1 = new Product("bag", 200.4);
-        product2 = new Product("chair", 50.28);
     }
 
     @Test
-    void testAddProductSameProduct() {
-        testShoppingWishList.addProduct(product1, 1);
+    void testAddProduct() {
+        testShoppingWishList.addProduct("book", 3.04, 1);
         shoppingWishList = testShoppingWishList.getShoppingWishList();
-        assertEquals(product1, shoppingWishList.get(0));
+        book = shoppingWishList.get(0);
+        assertEquals("book", book.getTitle());
+        assertEquals(3.04, book.getPrice());
+        assertEquals(1, book.getQuantity());
+        assertEquals(0, book.getStar());
         assertEquals(1, shoppingWishList.size());
-        assertEquals(1, product1.getQuantity());
-
-        testShoppingWishList.addProduct(product1, 2);
-        assertEquals(product1, shoppingWishList.get(0));
-        assertEquals(1, shoppingWishList.size());
-        assertEquals(3, product1.getQuantity());
     }
 
     @Test
-    void testAddProductDifferentProducts() {
-        testShoppingWishList.addProduct(product1, 1);
+    void testAddProductTwoProduct() {
+        testShoppingWishList.addProduct("book", 3.04, 1);
         shoppingWishList = testShoppingWishList.getShoppingWishList();
-        assertEquals(product1, shoppingWishList.get(0));
+        book = shoppingWishList.get(0);
+        assertEquals("book", book.getTitle());
+        assertEquals(3.04, book.getPrice());
+        assertEquals(1, book.getQuantity());
+        assertEquals(0, book.getStar());
         assertEquals(1, shoppingWishList.size());
-        assertEquals(1, product1.getQuantity());
 
-        testShoppingWishList.addProduct(product2, 1);
-        assertEquals(product2, shoppingWishList.get(1));
+        testShoppingWishList.addProduct("pen", 10.00, 2);
+        Product pen = shoppingWishList.get(1);
+        assertEquals("pen", pen.getTitle());
+        assertEquals(10.00, pen.getPrice());
+        assertEquals(2, pen.getQuantity());
+        assertEquals(0, pen.getStar());
         assertEquals(2, shoppingWishList.size());
-        assertEquals(1, product2.getQuantity());
     }
 
     @Test
-    void testRemoveProductSameProduct() {
-        testShoppingWishList.addProduct(product1, 3);
+    void testIncreaseQuantity() {
+        testShoppingWishList.addProduct("book", 3.04, 1);
         shoppingWishList = testShoppingWishList.getShoppingWishList();
-        testShoppingWishList.removeProduct(product1, 1);
-        assertEquals(2, product1.getQuantity());
-        assertTrue(testShoppingWishList.containsProduct(product1));
+        book = shoppingWishList.get(0);
+        testShoppingWishList.increaseQuantity(book, 2);
+        assertEquals(3, book.getQuantity());
+    }
 
-        testShoppingWishList.removeProduct(product1, 2);
+    @Test
+    void testDecreaseQuantity() {
+        testShoppingWishList.addProduct("book", 3.04, 2);
+        shoppingWishList = testShoppingWishList.getShoppingWishList();
+        book = shoppingWishList.get(0);
+        testShoppingWishList.decreaseQuantity(book, 1);
+        assertEquals(1, book.getQuantity());
+        assertTrue(testShoppingWishList.containsProduct("book"));
+    }
+
+    @Test
+    void testDecreaseQuantityRemoveProduct() {
+        testShoppingWishList.addProduct("book", 3.04, 2);
+        shoppingWishList = testShoppingWishList.getShoppingWishList();
+        book = shoppingWishList.get(0);
+        testShoppingWishList.decreaseQuantity(book, 2);
         assertTrue(shoppingWishList.isEmpty());
-        assertEquals(0, product1.getQuantity());
     }
 
     @Test
-    void testRemoveProductDifferentProducts() {
-        testShoppingWishList.addProduct(product1, 1);
-        testShoppingWishList.addProduct(product2, 2);
-        testShoppingWishList.removeProduct(product1, 1);
-        assertEquals(0, product1.getQuantity());
-        assertFalse(testShoppingWishList.containsProduct(product1));
+    void testDecreaseQuantityRemoveOneProduct() {
+        testShoppingWishList.addProduct("book", 3.04, 2);
+        testShoppingWishList.addProduct("pen", 10.00, 2);
         shoppingWishList = testShoppingWishList.getShoppingWishList();
-        assertEquals(product2, shoppingWishList.get(0));
+        book = shoppingWishList.get(0);
+        testShoppingWishList.decreaseQuantity(book, 1);
+        assertEquals(1, book.getQuantity());
+
+        Product pen = shoppingWishList.get(1);
+        testShoppingWishList.decreaseQuantity(pen, 2);
         assertEquals(1, shoppingWishList.size());
-
-        testShoppingWishList.removeProduct(product2, 2);
-        assertEquals(0, product2.getQuantity());
-        assertTrue(shoppingWishList.isEmpty());
+        assertTrue(testShoppingWishList.containsProduct("book"));
     }
 
     @Test
     void testContainsProduct() {
-        assertFalse(testShoppingWishList.containsProduct(product1));
-        testShoppingWishList.addProduct(product1, 1);
-        assertTrue(testShoppingWishList.containsProduct(product1));
-
-        assertFalse(testShoppingWishList.containsProduct(product2));
-        testShoppingWishList.addProduct(product2, 1);
-        assertTrue(testShoppingWishList.containsProduct(product2));
+        assertFalse(testShoppingWishList.containsProduct("book"));
+        testShoppingWishList.addProduct("book", 3.04, 2);
+        shoppingWishList = testShoppingWishList.getShoppingWishList();
+        book = shoppingWishList.get(0);
+        assertTrue(testShoppingWishList.containsProduct("book"));
+        testShoppingWishList.decreaseQuantity(book, 2);
+        assertFalse(testShoppingWishList.containsProduct("book"));
     }
 }
