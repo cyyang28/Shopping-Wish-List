@@ -3,7 +3,7 @@ package model;
 import java.util.ArrayList;
 
 // Represents a shopping wish list that lists the products
-// that shopper wants to purchase
+// that users want to purchase
 public class ShoppingWishList {
     private ArrayList<Product> shoppingWishList;
 
@@ -12,25 +12,25 @@ public class ShoppingWishList {
         shoppingWishList = new ArrayList<>();
     }
 
-    // REQUIRES: price > 0.0 && quantity >= 1
+    // REQUIRES: price > 0.00 AND quantity >= 1
     // MODIFIES: this, product
-    // EFFECTS: add a product with given title, price, and quantity
-    // to the shopping wish list
+    // EFFECTS: adds a product with given title, price, and quantity
+    // to the shoppingWishList
     public void addProduct(String title, double price, int quantity) {
         Product product = new Product(title, price);
         product.setQuantity(quantity);
         shoppingWishList.add(product);
     }
 
-    // REQUIRES: quantity >= 1 && product is contained in list
+    // REQUIRES: quantity >= 1 AND product is contained in shoppingWishList
     // MODIFIES: this, product
     // EFFECTS: increase the quantity of product by the amount specified
     public void increaseQuantity(Product product, int quantity) {
         product.setQuantity(product.getQuantity() + quantity);
     }
 
-    // REQUIRES: getQuantity() <= quantity && quantity >= 1
-    // && product is contained in the list
+    // REQUIRES: getQuantity() >= quantity AND quantity >= 1
+    // AND product is contained in shoppingWishList
     // MODIFIES: this, product
     // EFFECTS: if getQuantity() > quantity, decrease the quantity of the product
     // by the amount specified. If getQuantity() == quantity, remove the

@@ -1,4 +1,5 @@
 // Referenced code in AccountNotRobust-TellerApp class
+// https://github.students.cs.ubc.ca/CPSC210/TellerApp.git
 
 package ui;
 
@@ -18,10 +19,10 @@ public class WishListApp {
     }
 
     // MODIFIES: this
-    // EFFECTS: processes use input
+    // EFFECTS: processes user input
     private void runWishList() {
         boolean keepGoing = true;
-        String command = null;
+        String command;
 
         init();
 
@@ -37,7 +38,7 @@ public class WishListApp {
             }
         }
 
-        System.out.println("\nGoodbye!");
+        System.out.println("\nExiting shopping wish list app!");
     }
 
     // MODIFIES: this
@@ -77,7 +78,7 @@ public class WishListApp {
         System.out.println("\tq -> quit");
     }
 
-    // MODIFIES: this, product
+    // MODIFIES: this
     // EFFECTS: conducts an add product operation
     private void doAddProduct() {
         System.out.print("Enter product title: ");
@@ -88,7 +89,7 @@ public class WishListApp {
         int quantity = input.nextInt();
 
         if (price < 1.0 || quantity < 1) {
-            System.out.println("Cannot have input less than 1...\n");
+            System.out.println("Cannot have an input less than 1...\n");
         } else {
             shoppingWishList.addProduct(title, price, quantity);
         }
@@ -97,7 +98,7 @@ public class WishListApp {
         printShoppingWishList();
     }
 
-    // MODIFIES: this, product
+    // MODIFIES: this
     // EFFECTS: conducts an increase quantity operation
     private void doIncreaseQuantity() {
         Product selected = selectProduct();
@@ -108,11 +109,11 @@ public class WishListApp {
             shoppingWishList.increaseQuantity(selected, amount);
             System.out.println(selected.getTitle() + " quantity: " + selected.getQuantity());
         } else {
-            System.out.println("Cannot have amount less than one...");
+            System.out.println("Cannot have an amount less than one...");
         }
     }
 
-    // MODIFIES: this, product
+    // MODIFIES: this
     // EFFECTS: conducts a decrease quantity operation
     private void doDecreaseQuantity() {
         Product selected = selectProduct();
@@ -122,10 +123,11 @@ public class WishListApp {
         if (amount > 0 && selected.getQuantity() < amount) {
             System.out.println("Please enter amount between 1 and " + selected.getQuantity());
         } else if (amount > 0) {
-            shoppingWishList.decreaseQuantity(selected, amount);
             if (selected.getQuantity() == amount) {
+                shoppingWishList.decreaseQuantity(selected, amount);
                 System.out.println("Product removed from shopping wish list...");
             } else {
+                shoppingWishList.decreaseQuantity(selected, amount);
                 System.out.println(selected.getTitle() + " quantity: " + selected.getQuantity());
             }
         } else {
@@ -137,20 +139,20 @@ public class WishListApp {
     // EFFECTS: conducts a rate product operation
     private void doRateProduct() {
         Product selected = selectProduct();
-        System.out.print("Enter number of star to rate this product: ");
+        System.out.print("Enter number of stars to rate this product: ");
         int star = input.nextInt();
 
         if (0 <= star && star <= 5) {
             selected.rateProduct(star);
-            System.out.println(selected.getTitle() + " have " + selected.getStar() + " stars");
+            System.out.println(selected.getTitle() + " have a rating of " + selected.getStar() + " stars");
         } else {
-            System.out.println("Number of starts must be between 0 and 5...");
+            System.out.println("Number of stars must be between 0 and 5...");
         }
     }
 
     // EFFECTS: prompts user to select product in shopping wish list and returns it
     private Product selectProduct() {
-        String selection = "";
+        String selection;
 
         System.out.println("Select product from one of the following: ");
         for (Product next : shoppingWishList.getShoppingWishList()) {
@@ -169,6 +171,10 @@ public class WishListApp {
 
     // EFFECTS: prints the shopping wish list to the screen
     private void printShoppingWishList() {
+        if (shoppingWishList.getShoppingWishList().isEmpty()) {
+            System.out.println("Shopping wish list is empty...");
+        }
+
         for (Product next : shoppingWishList.getShoppingWishList()) {
             System.out.println(next.getTitle() + " $" + next.getPrice() + " quantity: " + next.getQuantity()
                     + ", rating of " + next.getStar() + " stars");
