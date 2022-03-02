@@ -11,4 +11,6 @@ make shopper's lives easier, whether they are shopping online or in store.
 - As a user, I want to be able to remove a product from my shopping wish list or decrease the quantities of the product.
 - As a user, I want to be able to view a list of the titles, prices, quantities, and ratings of the products in my shopping wish list.
 - As a user, I want to be able to select and rate a product in my shopping wish list on a scale of 0 to 5 star based on how much I need it.
+- As a user, I want to be able to save my shopping wish list to file
+- As a user, I want to be able to load my shopping wish list from file
  
