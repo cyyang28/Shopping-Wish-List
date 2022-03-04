@@ -1,20 +1,34 @@
 // Referenced code in AccountNotRobust-TellerApp class
 // https://github.students.cs.ubc.ca/CPSC210/TellerApp.git
 
+// Referenced code in JsonSerializationDemo-WorkRoomApp class
+// https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
+
 package ui;
 
 import model.Product;
 import model.ShoppingWishList;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 // Shopping wish list application
 public class WishListApp {
+    private static final String JSON_STORE = "./data/shoppingWishList.json";
     private ShoppingWishList shoppingWishList;
     private Scanner input;
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
-    // EFFECTS: runs the wish list application
-    public WishListApp() {
+    // EFFECTS: constructs wish list and runs application
+    public WishListApp() throws FileNotFoundException {
+        input = new Scanner(System.in);
+        shoppingWishList = new ShoppingWishList();
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
         runWishList();
     }
 
@@ -23,8 +37,7 @@ public class WishListApp {
     private void runWishList() {
         boolean keepGoing = true;
         String command;
-
-        init();
+        input = new Scanner(System.in);
 
         while (keepGoing) {
             displayMenu();
@@ -54,17 +67,13 @@ public class WishListApp {
             doRateProduct();
         } else if (command.equals("v")) {
             printShoppingWishList();
+        } else if (command.equals("s")) {
+            saveWishList();
+        } else if (command.equals("l")) {
+            loadWishList();
         } else {
             System.out.println("Selection not valid...");
         }
-    }
-
-    // MODIFIES: this
-    // EFFECTS: initializes shopping wish list
-    private void init() {
-        shoppingWishList = new ShoppingWishList();
-        input = new Scanner(System.in);
-        input.useDelimiter("\n");
     }
 
     // EFFECTS: displays menu of options to user
@@ -75,6 +84,8 @@ public class WishListApp {
         System.out.println("\td -> decrease quantity");
         System.out.println("\tr -> rate product");
         System.out.println("\tv -> view shopping list");
+        System.out.println("\ts -> save wish list to file");
+        System.out.println("\tl -> load wish list from file");
         System.out.println("\tq -> quit");
     }
 
@@ -178,6 +189,29 @@ public class WishListApp {
         for (Product next : shoppingWishList.getShoppingWishList()) {
             System.out.println(next.getTitle() + " $" + next.getPrice() + " quantity: " + next.getQuantity()
                     + ", rating of " + next.getStar() + " stars");
+        }
+    }
+
+    // EFFECTS: saves the shopping wish list to file
+    private void saveWishList() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(shoppingWishList);
+            jsonWriter.close();
+            System.out.println("Saved shopping wish list to " + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE);
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: loads shopping wish list from file
+    private void loadWishList() {
+        try {
+            shoppingWishList = jsonReader.read();
+            System.out.println("Loaded shopping wish list from " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE);
         }
     }
 }

@@ -1,10 +1,17 @@
+// Referenced code in JsonSerializationDemo-WorkRoom class
+// https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
+
 package model;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
 
 import java.util.ArrayList;
 
 // Represents a shopping wish list that lists the products
 // that users want to purchase
-public class ShoppingWishList {
+public class ShoppingWishList implements Writable {
     private ArrayList<Product> shoppingWishList;
 
     // EFFECTS: constructs an empty collection of products
@@ -56,5 +63,23 @@ public class ShoppingWishList {
 
     public ArrayList<Product> getShoppingWishList() {
         return shoppingWishList;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("shoppingWishList", wishListToJson());
+        return json;
+    }
+
+    // EFFECTS: returns things in this wish list as a JSON array
+    private JSONArray wishListToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Product next : shoppingWishList) {
+            jsonArray.put(next.toJson());
+        }
+
+        return jsonArray;
     }
 }
