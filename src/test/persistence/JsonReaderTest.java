@@ -46,7 +46,7 @@ class JsonReaderTest extends JsonTest {
             List<Product> products = wl.getShoppingWishList();
             assertEquals(2, products.size());
             checkProduct("book", 10.05, 2, 0, products.get(0));
-            checkProduct("bag", 35.23, 5, 0, products.get(1));
+            checkProduct("bag", 35.23, 5, 2, products.get(1));
         } catch(IOException e) {
             fail("Couldn't read from file");
         }

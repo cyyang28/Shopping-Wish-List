@@ -51,6 +51,7 @@ class JsonWriterTest extends JsonTest {
             ShoppingWishList wl = new ShoppingWishList();
             wl.addProduct("book", 10.05, 2);
             wl.addProduct("bag", 35.23, 5);
+            wl.getShoppingWishList().get(1).rateProduct(2);
             JsonWriter writer = new JsonWriter("./data/testWriterGeneralShoppingWishList.json");
             writer.open();
             writer.write(wl);
@@ -61,7 +62,7 @@ class JsonWriterTest extends JsonTest {
             List<Product> products = wl.getShoppingWishList();
             assertEquals(2, products.size());
             checkProduct("book", 10.05, 2, 0, products.get(0));
-            checkProduct("bag", 35.23, 5, 0, products.get(1));
+            checkProduct("bag", 35.23, 5, 2, products.get(1));
         } catch(IOException e) {
             fail("Exception should not have been thrown");
         }
