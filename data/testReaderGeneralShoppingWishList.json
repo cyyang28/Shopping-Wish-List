@@ -1,16 +1,16 @@
 {
-  "shoppingWishList": [
-    {
-      "title": "book",
-      "price": "10.05",
-      "quantity": "2",
-      "star": "0"
-    },
-    {
-      "title": "bag",
-      "price": "35.23",
-      "quantity": "5",
-      "star": "2"
-    }
-  ]
+    "shoppingWishList": [
+        {
+            "title": "book",
+            "price": "10.05",
+            "quantity": "2",
+            "star": "0"
+        },
+        {
+            "title": "bag",
+            "price": "35.23",
+            "quantity": "5",
+            "star": "2"
+        }
+    ]
 }

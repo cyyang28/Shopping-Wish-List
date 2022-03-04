@@ -72,7 +72,7 @@ public class ShoppingWishList implements Writable {
         return json;
     }
 
-    // EFFECTS: returns things in this wish list as a JSON array
+    // EFFECTS: returns products in this shopping wish list as a JSON array
     private JSONArray wishListToJson() {
         JSONArray jsonArray = new JSONArray();
 
