@@ -15,7 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
-// Shopping wish list application
+// Represents the shopping wish list application
 public class WishListApp {
     private static final String JSON_STORE = "./data/shoppingWishList.json";
     private ShoppingWishList shoppingWishList;
