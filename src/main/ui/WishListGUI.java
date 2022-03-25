@@ -41,7 +41,7 @@
 // Referenced code in layout-SpringFormProject-SpringForm class
 // https://docs.oracle.com/javase/tutorial/uiswing/examples/zipfiles/layout-SpringFormProject.zip
 
-// Referenced code in
+// Referenced code in:
 // https://docs.oracle.com/javase/8/docs/api/javax/swing/JOptionPane.html
 // https://stackoverflow.com/questions/6578205/swing-jlabel-text-change-on-the-running-application
 // https://docs.oracle.com/javase/tutorial/uiswing/events/intro.html
@@ -95,34 +95,18 @@ public class WishListGUI extends JPanel
 
     public WishListGUI() {
         super(new BorderLayout());
-        wishList = new ShoppingWishList();
-        jsonWriter = new JsonWriter(JSON_STORE);
-        jsonReader = new JsonReader(JSON_STORE);
-
-        listModel = new DefaultListModel();
-        listModel.addElement("Purse");
-
-        //Create the list and put it in a scroll pane.
-        list = new JList(listModel);
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setSelectedIndex(0);
-        list.addListSelectionListener(this);
+        listSetUp();
 
         addSaveButton();
         addLoadButton();
 
-        //Create a panel that uses BoxLayout.
         JPanel listButtonPane = new JPanel();
         JPanel listAndButtonPane = new JPanel();
         JScrollPane listScrollPane = getjScrollPane(list, listButtonPane, listAndButtonPane, saveButton, loadButton);
 
-        //Create the panel and put it in the right scroll pane.
         productInfo = new JPanel(new SpringLayout());
         initLabelText();
-        addLabelText(titleLabel, titleText);
-        addLabelText(priceLabel, priceText);
-        addLabelText(quantityLabel, quantityText);
-        addLabelText(starLabel, starText);
+        addLabelText();
         SpringUtilities.makeCompactGrid(productInfo, 4, 2, 6, 6, 6, 6);
 
         JButton addButton = new JButton(addString);
@@ -133,13 +117,26 @@ public class WishListGUI extends JPanel
 
         addEventListener(addListener);
 
-        //Create a panel that uses BoxLayout.
         JPanel productButtonPane = new JPanel();
         JPanel productAndButtonPane = new JPanel();
         JScrollPane productScrollPane = getjScrollPane(productInfo, productButtonPane, productAndButtonPane,
                 addButton, removeButton);
 
         setSplitPane(listScrollPane, productScrollPane);
+    }
+
+    private void listSetUp() {
+        wishList = new ShoppingWishList();
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
+
+        listModel = new DefaultListModel();
+//        listModel.addElement("Purse");
+
+        list = new JList(listModel);
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.setSelectedIndex(0);
+        list.addListSelectionListener(this);
     }
 
     private void addAddButton(JButton addButton, AddListener addListener) {
@@ -218,10 +215,22 @@ public class WishListGUI extends JPanel
         starText = new JTextField();
     }
 
-    private void addLabelText(JLabel label, JTextField text) {
-        productInfo.add(label);
-        label.setLabelFor(text);
-        productInfo.add(text);
+    private void addLabelText() {
+        productInfo.add(titleLabel);
+        titleLabel.setLabelFor(titleText);
+        productInfo.add(titleText);
+
+        productInfo.add(priceLabel);
+        priceLabel.setLabelFor(priceText);
+        productInfo.add(priceText);
+
+        productInfo.add(quantityLabel);
+        quantityLabel.setLabelFor(quantityText);
+        productInfo.add(quantityText);
+
+        productInfo.add(starLabel);
+        starLabel.setLabelFor(starText);
+        productInfo.add(starText);
     }
 
     public JSplitPane getSplitPane() {
@@ -266,12 +275,12 @@ public class WishListGUI extends JPanel
             ImageIcon removePopUp = new ImageIcon("src/main/ui/productRemoved.png");
             JOptionPane.showMessageDialog(null, removePopUp);
 
-            Product product = wishList.getShoppingWishList().get(wishList.getShoppingWishList().size() - 1);
+            Product product = wishList.getShoppingWishList().get(index);
             wishList.decreaseQuantity(product, product.getQuantity());
 
             int size = listModel.getSize();
 
-            if (size == 0) { //Nobody's left, disable firing.
+            if (size == 0) { //No product's left, disable removing
                 removeButton.setEnabled(false);
 
             } else { //Select an index.
@@ -314,18 +323,17 @@ public class WishListGUI extends JPanel
                 index++;
             }
 
-            listModel.addElement(titleText.getText() + " $" + priceText.getText() + " x " + quantityText.getText()
-                    + " star rating: " + starText.getText());
+            listModel.addElement(titleText.getText() + " $" + priceText.getText() + " quantity: "
+                    + quantityText.getText() + " star rating: " + starText.getText());
 
             wishList.addProduct(titleText.getText(), Double.parseDouble(priceText.getText()),
                     Integer.parseInt(quantityText.getText()));
 
-            Product product = wishList.getShoppingWishList().get(wishList.getShoppingWishList().size() - 1);
+            Product product = wishList.getShoppingWishList().get(index);
             product.rateProduct(Integer.parseInt(starText.getText()));
 
             resetText();
 
-            //Select the new item and make it visible.
             list.setSelectedIndex(index);
             list.ensureIndexIsVisible(index);
         }
@@ -398,14 +406,14 @@ public class WishListGUI extends JPanel
             jsonWriter.write(wishList);
             jsonWriter.close();
         } catch (FileNotFoundException e) {
-            // TODO
+            // do nothing
         }
     }
 
 
     class LoadListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            // TODO
+            loadWishList();
         }
     }
 
@@ -414,8 +422,15 @@ public class WishListGUI extends JPanel
     private void loadWishList() {
         try {
             wishList = jsonReader.read();
+            for (Product next : wishList.getShoppingWishList()) {
+                String title = next.getTitle();
+                String price = Double.toString(next.getPrice());
+                String quantity = Integer.toString(next.getQuantity());
+                String star = Integer.toString(next.getStar());
+                listModel.addElement(title + " $" + price + " quantity " + quantity + " star rating: " + star);
+            }
         } catch (IOException e) {
-            // TODO
+            // do nothing
         }
     }
 

@@ -69,6 +69,7 @@ public class SpringUtilities {
      * @param xpad x padding between cells
      * @param ypad y padding between cells
      */
+    @SuppressWarnings({"checkstyle:MethodLength", "checkstyle:SuppressWarnings"})
     public static void makeGrid(Container parent,
                                 int rows, int cols,
                                 int initialX, int initialY,
@@ -161,6 +162,7 @@ public class SpringUtilities {
      * @param xpad x padding between cells
      * @param ypad y padding between cells
      */
+    @SuppressWarnings({"checkstyle:MethodLength", "checkstyle:SuppressWarnings"})
     public static void makeCompactGrid(Container parent,
                                        int rows, int cols,
                                        int initialX, int initialY,
