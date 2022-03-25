@@ -1,20 +1,14 @@
 {"shoppingWishList": [
     {
-        "quantity": 25,
-        "star": 5,
+        "quantity": 2,
+        "star": 0,
         "price": 10,
         "title": "book"
     },
     {
-        "quantity": 3,
-        "star": 1,
-        "price": 10,
-        "title": "pen"
-    },
-    {
-        "quantity": 1,
+        "quantity": 2,
         "star": 0,
-        "price": 3,
-        "title": "pie"
+        "price": 4,
+        "title": "pen"
     }
 ]}
