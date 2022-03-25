@@ -29,12 +29,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Referenced code in componentsListDemoProject-ListDemo class
+// Referenced code in components-ListDemoProject-ListDemo class
 // https://docs.oracle.com/javase/tutorial/uiswing/examples/zipfiles/components-ListDemoProject.zip
 
 // Referenced code in components-SplitPaneDemoProject-SplitPaneDemo class
 // https://docs.oracle.com/javase/tutorial/uiswing/examples/zipfiles/components-SplitPaneDemoProject.zip
 
+// Referenced code in components-TextInputDemoProject-TextInputDemo class
+// https://docs.oracle.com/javase/tutorial/uiswing/examples/zipfiles/components-TextInputDemoProject.zip
+
+// Referenced code in layout-SpringFormProject-SpringForm class
+// https://docs.oracle.com/javase/tutorial/uiswing/examples/zipfiles/layout-SpringFormProject.zip
 
 package ui;
 
@@ -50,26 +55,33 @@ public class WishListGUI extends JPanel
     private JPanel productInfo;
     private DefaultListModel listModel;
     private JSplitPane splitPane;
-//    private String[] imageNames = { "Bird", "Cat", "Dog", "Rabbit", "Pig", "dukeWaveRed",
-//            "kathyCosmo", "lainesTongue", "left", "middle", "right", "stickerface"};
 
     private static final String addString = "Add";
     private static final String removeString = "Remove";
     private JButton removeButton;
-    private JTextField productTitle;
 
     private static final String saveString = "Save";
     private static final String loadString = "Load";
     private JButton saveButton;
     private JButton loadButton;
 
+    private JLabel titleLabel;
+    private JLabel priceLabel;
+    private JLabel quantityLabel;
+    private JLabel starLabel;
+
+    private JTextField titleText;
+    private JTextField priceText;
+    private JTextField quantityText;
+    private JTextField starText;
+
+
+
     public WishListGUI() {
         super(new BorderLayout());
 
         listModel = new DefaultListModel();
         listModel.addElement("Purse");
-        listModel.addElement("Shoe");
-        listModel.addElement("Pen");
 
         //Create the list and put it in a scroll pane.
         list = new JList(listModel);
@@ -88,27 +100,18 @@ public class WishListGUI extends JPanel
 
         //Create a panel that uses BoxLayout.
         JPanel listButtonPane = new JPanel();
-        listButtonPane.setLayout(new BoxLayout(listButtonPane,
-                BoxLayout.LINE_AXIS));
-        listButtonPane.add(saveButton);
-        listButtonPane.add(Box.createHorizontalStrut(1));
-        listButtonPane.add(Box.createHorizontalStrut(1));
-        listButtonPane.add(loadButton);
-        listButtonPane.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
-
-        //Make panel that contains the list and button pane
         JPanel listAndButtonPane = new JPanel();
-        listAndButtonPane.setLayout(new BoxLayout(listAndButtonPane, BoxLayout.LINE_AXIS));
-        listAndButtonPane.add(list, BorderLayout.PAGE_START);
-        listAndButtonPane.add(listButtonPane, BorderLayout.PAGE_END);
-        JScrollPane listScrollPane = new JScrollPane(listAndButtonPane);
+        JScrollPane listScrollPane = getjScrollPane(list, listButtonPane, listAndButtonPane, saveButton, loadButton);
 
         //Create the panel and put it in the right scroll pane.
-        productInfo = new JPanel();
-        productInfo.setLayout(new BoxLayout(productInfo,
-                BoxLayout.LINE_AXIS));
+        productInfo = new JPanel(new SpringLayout());
+        initLabelText();
+        addLabelText(titleLabel, titleText);
+        addLabelText(priceLabel, priceText);
+        addLabelText(quantityLabel, quantityText);
+        addLabelText(starLabel, starText);
+        SpringUtilities.makeCompactGrid(productInfo, 4, 2, 6, 6, 6, 6);
 
-        // add button need string since adding something
         JButton addButton = new JButton(addString);
         AddListener addListener = new AddListener(addButton);
         addButton.setActionCommand(addString);
@@ -119,56 +122,78 @@ public class WishListGUI extends JPanel
         removeButton.setActionCommand(removeString);
         removeButton.addActionListener(new RemoveListener());
 
-        JScrollPane productInfoScrollPane = new JScrollPane(productInfo);
+        addEventListener(addListener);
 
-        //Create a split pane with the two scroll panes in it.
+        //Create a panel that uses BoxLayout.
+        JPanel productButtonPane = new JPanel();
+        JPanel productAndButtonPane = new JPanel();
+        JScrollPane productScrollPane = getjScrollPane(productInfo, productButtonPane, productAndButtonPane,
+                addButton, removeButton);
+
+        setSplitPane(listScrollPane, productScrollPane);
+    }
+
+    private void addEventListener(AddListener addListener) {
+        titleText.addActionListener(addListener);
+        titleText.getDocument().addDocumentListener(addListener);
+        priceText.addActionListener(addListener);
+        priceText.getDocument().addDocumentListener(addListener);
+        quantityText.addActionListener(addListener);
+        quantityText.getDocument().addDocumentListener(addListener);
+        starText.addActionListener(addListener);
+        starText.getDocument().addDocumentListener(addListener);
+    }
+
+    private void setSplitPane(JScrollPane listScrollPane, JScrollPane productScrollPane) {
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-                listScrollPane, productInfoScrollPane);
+                listScrollPane, productScrollPane);
         splitPane.setOneTouchExpandable(true);
         splitPane.setDividerLocation(150);
 
-        //Provide minimum sizes for the two components in the split pane.
         Dimension minimumSize = new Dimension(100, 50);
         listScrollPane.setMinimumSize(minimumSize);
-        productInfoScrollPane.setMinimumSize(minimumSize);
+        productScrollPane.setMinimumSize(minimumSize);
 
-        //Provide a preferred size for the split pane.
         splitPane.setPreferredSize(new Dimension(400, 200));
-//        updateLabel(imageNames[list.getSelectedIndex()]);
     }
 
-    //Listens to the list
-    public void valueChanged(ListSelectionEvent e) {
-        JList list = (JList)e.getSource();
-//        updateLabel(imageNames[list.getSelectedIndex()]);
+    private JScrollPane getjScrollPane(JComponent topPane, JPanel buttonPane, JPanel combinePane,
+                                       JButton left, JButton right) {
+        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+        buttonPane.add(left);
+        buttonPane.add(Box.createHorizontalStrut(1));
+        buttonPane.add(Box.createHorizontalStrut(1));
+        buttonPane.add(right);
+        buttonPane.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+
+        combinePane.setLayout(new BoxLayout(combinePane, BoxLayout.Y_AXIS));
+        combinePane.add(topPane, BorderLayout.CENTER);
+        combinePane.add(buttonPane, BorderLayout.PAGE_END);
+        JScrollPane scrollPane = new JScrollPane(combinePane);
+        return scrollPane;
     }
 
-//    //Renders the selected image
-//    protected void updateLabel (String name) {
-//        ImageIcon icon = createImageIcon("images/" + name + ".gif");
-//        picture.setIcon(icon);
-//        if  (icon != null) {
-//            picture.setText(null);
-//        } else {
-//            picture.setText("Image not found");
-//        }
-//    }
-//
+    private void initLabelText() {
+        titleLabel = new JLabel("Title: ", JLabel.TRAILING);
+        priceLabel = new JLabel("Price($): ", JLabel.TRAILING);
+        quantityLabel = new JLabel("Quantity: ", JLabel.TRAILING);
+        starLabel = new JLabel("Star: ", JLabel.TRAILING);
+
+        titleText = new JTextField();
+        priceText = new JTextField();
+        quantityText = new JTextField();
+        starText = new JTextField();
+    }
+
+    private void addLabelText(JLabel label, JTextField text) {
+        productInfo.add(label);
+        label.setLabelFor(text);
+        productInfo.add(text);
+    }
+
     public JSplitPane getSplitPane() {
         return splitPane;
     }
-//
-//
-//    /** Returns an ImageIcon, or null if the path was invalid. */
-//    protected static ImageIcon createImageIcon(String path) {
-//        java.net.URL imgURL = components.WishListGUI.class.getResource(path);
-//        if (imgURL != null) {
-//            return new ImageIcon(imgURL);
-//        } else {
-//            System.err.println("Couldn't find file: " + path);
-//            return null;
-//        }
-//    }
 
     /**
      * Create the GUI and show it.  For thread safety,
@@ -234,13 +259,13 @@ public class WishListGUI extends JPanel
 
         //Required by ActionListener.
         public void actionPerformed(ActionEvent e) {
-            String name = productTitle.getText();
+            String title = titleText.getText();
 
-            //User didn't type in a unique name...
-            if (name.equals("") || alreadyInList(name)) {
+            //User didn't type in a unique title...
+            if (title.equals("") || alreadyInList(title)) {
                 Toolkit.getDefaultToolkit().beep();
-                productTitle.requestFocusInWindow();
-                productTitle.selectAll();
+                titleText.requestFocusInWindow();
+                titleText.selectAll();
                 return;
             }
 
@@ -251,13 +276,21 @@ public class WishListGUI extends JPanel
                 index++;
             }
 
-            listModel.insertElementAt(productTitle.getText(), index);
-            //If we just wanted to add to the end, we'd do this:
-            //listModel.addElement(employeeName.getText());
+            listModel.addElement(titleText.getText() + " $" + priceText.getText() + " x " + quantityText.getText()
+                    + " star rating: " + starText.getText());
 
             //Reset the text field.
-            productTitle.requestFocusInWindow();
-            productTitle.setText("");
+            titleText.requestFocusInWindow();
+            titleText.setText("");
+
+            priceText.requestFocusInWindow();
+            priceText.setText("");
+
+            quantityText.requestFocusInWindow();
+            quantityText.setText("");
+
+            starText.requestFocusInWindow();
+            starText.setText("");
 
             //Select the new item and make it visible.
             list.setSelectedIndex(index);
@@ -267,8 +300,8 @@ public class WishListGUI extends JPanel
         //This method tests for string equality. You could certainly
         //get more sophisticated about the algorithm.  For example,
         //you might want to ignore white space and capitalization.
-        protected boolean alreadyInList(String name) {
-            return listModel.contains(name);
+        protected boolean alreadyInList(String title) {
+            return listModel.contains(title);
         }
 
         //Required by DocumentListener.
@@ -316,20 +349,20 @@ public class WishListGUI extends JPanel
         }
     }
 
-//    //This method is required by ListSelectionListener.
-//    public void valueChanged(ListSelectionEvent e) {
-//        if (e.getValueIsAdjusting() == false) {
-//
-//            if (list.getSelectedIndex() == -1) {
-//                //No selection, disable remove button.
-//                removeButton.setEnabled(false);
-//
-//            } else {
-//                //Selection, enable the remove button.
-//                removeButton.setEnabled(true);
-//            }
-//        }
-//    }
+    //This method is required by ListSelectionListener.
+    public void valueChanged(ListSelectionEvent e) {
+        if (e.getValueIsAdjusting() == false) {
+
+            if (list.getSelectedIndex() == -1) {
+                //No selection, disable remove button.
+                removeButton.setEnabled(false);
+
+            } else {
+                //Selection, enable the remove button.
+                removeButton.setEnabled(true);
+            }
+        }
+    }
 
 
 }
