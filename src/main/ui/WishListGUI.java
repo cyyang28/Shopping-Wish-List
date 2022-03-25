@@ -279,7 +279,15 @@ public class WishListGUI extends JPanel
             listModel.addElement(titleText.getText() + " $" + priceText.getText() + " x " + quantityText.getText()
                     + " star rating: " + starText.getText());
 
-            //Reset the text field.
+            resetText();
+
+            //Select the new item and make it visible.
+            list.setSelectedIndex(index);
+            list.ensureIndexIsVisible(index);
+        }
+
+        // EFFECTS: reset the text field
+        private void resetText() {
             titleText.requestFocusInWindow();
             titleText.setText("");
 
@@ -291,10 +299,6 @@ public class WishListGUI extends JPanel
 
             starText.requestFocusInWindow();
             starText.setText("");
-
-            //Select the new item and make it visible.
-            list.setSelectedIndex(index);
-            list.ensureIndexIsVisible(index);
         }
 
         //This method tests for string equality. You could certainly
