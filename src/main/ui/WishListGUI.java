@@ -41,6 +41,9 @@
 // Referenced code in layout-SpringFormProject-SpringForm class
 // https://docs.oracle.com/javase/tutorial/uiswing/examples/zipfiles/layout-SpringFormProject.zip
 
+// Referenced code in JsonSerializationDemo-WorkRoomApp class
+// https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
+
 // Referenced code in:
 // https://docs.oracle.com/javase/8/docs/api/javax/swing/JOptionPane.html
 // https://stackoverflow.com/questions/6578205/swing-jlabel-text-change-on-the-running-application
@@ -59,20 +62,21 @@ import model.ShoppingWishList;
 import persistence.JsonReader;
 import persistence.JsonWriter;
 
-//WishListGUI itself is not a visible component.
+// Represents the shopping wish list Graphical User Interface
 public class WishListGUI extends JPanel
         implements ListSelectionListener {
+    private static final String addString = "Add";
+    private static final String removeString = "Remove";
+    private static final String saveString = "Save";
+    private static final String loadString = "Load";
+    private static final String JSON_STORE = "./data/shoppingWishList.json";
+
     private JList list;
     private JPanel productInfo;
     private DefaultListModel listModel;
     private JSplitPane splitPane;
 
-    private static final String addString = "Add";
-    private static final String removeString = "Remove";
     private JButton removeButton;
-
-    private static final String saveString = "Save";
-    private static final String loadString = "Load";
     private JButton saveButton;
     private JButton loadButton;
 
@@ -90,9 +94,9 @@ public class WishListGUI extends JPanel
 
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
-    private static final String JSON_STORE = "./data/shoppingWishList.json";
 
 
+    // EFFECTS: set up and runs shopping wish list GUI
     public WishListGUI() {
         super(new BorderLayout());
         listSetUp();
@@ -125,13 +129,14 @@ public class WishListGUI extends JPanel
         setSplitPane(listScrollPane, productScrollPane);
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets up the wishList, Json, listModel and JList
     private void listSetUp() {
         wishList = new ShoppingWishList();
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
 
         listModel = new DefaultListModel();
-//        listModel.addElement("Purse");
 
         list = new JList(listModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -139,30 +144,40 @@ public class WishListGUI extends JPanel
         list.addListSelectionListener(this);
     }
 
+    // MODIFIES: this
+    // EFFECTS: makes the addButton
     private void addAddButton(JButton addButton, AddListener addListener) {
         addButton.setActionCommand(addString);
         addButton.addActionListener(addListener);
         addButton.setEnabled(false);
     }
 
+    // MODIFIES: this
+    // EFFECTS: makes the removeButton
     private void addRemoveButton() {
         removeButton = new JButton(removeString);
         removeButton.setActionCommand(removeString);
         removeButton.addActionListener(new RemoveListener());
     }
 
+    // MODIFIES: this
+    // EFFECTS: makes the loadButton
     private void addLoadButton() {
         loadButton = new JButton(loadString);
         loadButton.setActionCommand(loadString);
         loadButton.addActionListener(new LoadListener());
     }
 
+    // MODIFIES: this
+    // EFFECTS: makes the saveButton
     private void addSaveButton() {
         saveButton = new JButton(saveString);
         saveButton.setActionCommand(saveString);
         saveButton.addActionListener(new SaveListener());
     }
 
+    // MODIFIES: this
+    // EFFECTS: adds the event listener for adding a product
     private void addEventListener(AddListener addListener) {
         titleText.addActionListener(addListener);
         titleText.getDocument().addDocumentListener(addListener);
@@ -174,6 +189,8 @@ public class WishListGUI extends JPanel
         starText.getDocument().addDocumentListener(addListener);
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets up the split pane
     private void setSplitPane(JScrollPane listScrollPane, JScrollPane productScrollPane) {
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
                 listScrollPane, productScrollPane);
@@ -187,6 +204,8 @@ public class WishListGUI extends JPanel
         splitPane.setPreferredSize(new Dimension(400, 200));
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets up the scroll
     private JScrollPane getjScrollPane(JComponent topPane, JPanel buttonPane, JPanel combinePane,
                                        JButton left, JButton right) {
         buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
@@ -203,6 +222,8 @@ public class WishListGUI extends JPanel
         return scrollPane;
     }
 
+    // MODIFIES: this
+    // EFFECTS: instantiates the JLabels and JTextFields
     private void initLabelText() {
         titleLabel = new JLabel("Title: ", JLabel.TRAILING);
         priceLabel = new JLabel("Price($): ", JLabel.TRAILING);
@@ -215,6 +236,8 @@ public class WishListGUI extends JPanel
         starText = new JTextField();
     }
 
+    // MODIFIES: this
+    // EFFECTS: pair up the labels and textFields and add to pane
     private void addLabelText() {
         productInfo.add(titleLabel);
         titleLabel.setLabelFor(titleText);
@@ -233,31 +256,24 @@ public class WishListGUI extends JPanel
         productInfo.add(starText);
     }
 
+    // EFFECTS: getter for split pane
     public JSplitPane getSplitPane() {
         return splitPane;
     }
 
-    /**
-     * Create the GUI and show it.  For thread safety,
-     * this method should be invoked from the
-     * event-dispatching thread.
-     */
+    // MODIFIES: this
+    // EFFECTS: Constructs and display the GUI
     private static void createAndShowGUI() {
-
-        //Create and set up the window.
         JFrame frame = new JFrame("WishListGUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         ui.WishListGUI wishListGUI = new ui.WishListGUI();
         frame.getContentPane().add(wishListGUI.getSplitPane());
 
-        //Display the window.
         frame.pack();
         frame.setVisible(true);
     }
 
     public static void main(String[] args) {
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
@@ -265,11 +281,11 @@ public class WishListGUI extends JPanel
         });
     }
 
+    // Represents event listener for removing products
     class RemoveListener implements ActionListener {
+
+        // EFFECTS: remove whatever is selected
         public void actionPerformed(ActionEvent e) {
-            //This method can be called only if
-            //there's a valid selection
-            //so go ahead and remove whatever's selected.
             int index = list.getSelectedIndex();
             listModel.remove(index);
             ImageIcon removePopUp = new ImageIcon("src/main/ui/productRemoved.png");
@@ -295,7 +311,7 @@ public class WishListGUI extends JPanel
         }
     }
 
-    //This listener is shared by the text field and the add button.
+    // Represents event listener for adding a product
     class AddListener implements ActionListener, DocumentListener {
         private boolean alreadyEnabled = false;
         private JButton button;
@@ -304,7 +320,6 @@ public class WishListGUI extends JPanel
             this.button = button;
         }
 
-        //Required by ActionListener.
         public void actionPerformed(ActionEvent e) {
             String title = titleText.getText();
 
@@ -338,6 +353,7 @@ public class WishListGUI extends JPanel
             list.ensureIndexIsVisible(index);
         }
 
+        // MODIFIES: this
         // EFFECTS: reset the text field
         private void resetText() {
             titleText.requestFocusInWindow();
@@ -353,36 +369,39 @@ public class WishListGUI extends JPanel
             starText.setText("");
         }
 
-        //This method tests for string equality. You could certainly
-        //get more sophisticated about the algorithm.  For example,
-        //you might want to ignore white space and capitalization.
+        // EFFECTS: return true if list contains the title
         protected boolean alreadyInList(String title) {
             return listModel.contains(title);
         }
 
-        //Required by DocumentListener.
+        // EFFECTS: Required by DocumentListener.
         public void insertUpdate(DocumentEvent e) {
             enableButton();
         }
 
-        //Required by DocumentListener.
+        // EFFECTS: Required by DocumentListener.
         public void removeUpdate(DocumentEvent e) {
             handleEmptyTextField(e);
         }
 
-        //Required by DocumentListener.
+        // EFFECTS: Required by DocumentListener.
         public void changedUpdate(DocumentEvent e) {
             if (!handleEmptyTextField(e)) {
                 enableButton();
             }
         }
 
+        // MODIFIES: this
+        // EFFECTS: enables button
         private void enableButton() {
             if (!alreadyEnabled) {
                 button.setEnabled(true);
             }
         }
 
+        // MODIFIES: this
+        // EFFECTS: if textField is empty, disables button and return true;
+        // otherwise, return false
         private boolean handleEmptyTextField(DocumentEvent e) {
             if (e.getDocument().getLength() <= 0) {
                 button.setEnabled(false);
@@ -393,12 +412,14 @@ public class WishListGUI extends JPanel
         }
     }
 
+    // Represents event listener for saving wish list
     class SaveListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             saveWishList();
         }
     }
 
+    // MODIFIES: this
     // EFFECTS: saves the shopping wish list to file
     private void saveWishList() {
         try {
@@ -410,7 +431,7 @@ public class WishListGUI extends JPanel
         }
     }
 
-
+    // Represents event listener for loading wish list
     class LoadListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             loadWishList();
@@ -435,7 +456,8 @@ public class WishListGUI extends JPanel
     }
 
 
-    //This method is required by ListSelectionListener.
+    // MODIFIES: this
+    // EFFECTS: enable/disable remove Button base on selection, required by ListSelectionListener.
     public void valueChanged(ListSelectionEvent e) {
         if (e.getValueIsAdjusting() == false) {
 
