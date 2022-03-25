@@ -41,12 +41,23 @@
 // Referenced code in layout-SpringFormProject-SpringForm class
 // https://docs.oracle.com/javase/tutorial/uiswing/examples/zipfiles/layout-SpringFormProject.zip
 
+// Referenced code in
+// https://docs.oracle.com/javase/8/docs/api/javax/swing/JOptionPane.html
+// https://stackoverflow.com/questions/6578205/swing-jlabel-text-change-on-the-running-application
+// https://docs.oracle.com/javase/tutorial/uiswing/events/intro.html
+
 package ui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import javax.swing.*;
 import javax.swing.event.*;
+import model.Product;
+import model.ShoppingWishList;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
 //WishListGUI itself is not a visible component.
 public class WishListGUI extends JPanel
@@ -75,10 +86,18 @@ public class WishListGUI extends JPanel
     private JTextField quantityText;
     private JTextField starText;
 
+    private ShoppingWishList wishList;
+
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
+    private static final String JSON_STORE = "./data/shoppingWishList.json";
 
 
     public WishListGUI() {
         super(new BorderLayout());
+        wishList = new ShoppingWishList();
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
 
         listModel = new DefaultListModel();
         listModel.addElement("Purse");
@@ -89,14 +108,8 @@ public class WishListGUI extends JPanel
         list.setSelectedIndex(0);
         list.addListSelectionListener(this);
 
-        //Make buttons for list pane
-        saveButton = new JButton(saveString);
-        saveButton.setActionCommand(saveString);
-        saveButton.addActionListener(new SaveListener());
-
-        loadButton = new JButton(loadString);
-        loadButton.setActionCommand(loadString);
-        loadButton.addActionListener(new LoadListener());
+        addSaveButton();
+        addLoadButton();
 
         //Create a panel that uses BoxLayout.
         JPanel listButtonPane = new JPanel();
@@ -114,13 +127,9 @@ public class WishListGUI extends JPanel
 
         JButton addButton = new JButton(addString);
         AddListener addListener = new AddListener(addButton);
-        addButton.setActionCommand(addString);
-        addButton.addActionListener(addListener);
-        addButton.setEnabled(false);
+        addAddButton(addButton, addListener);
 
-        removeButton = new JButton(removeString);
-        removeButton.setActionCommand(removeString);
-        removeButton.addActionListener(new RemoveListener());
+        addRemoveButton();
 
         addEventListener(addListener);
 
@@ -131,6 +140,30 @@ public class WishListGUI extends JPanel
                 addButton, removeButton);
 
         setSplitPane(listScrollPane, productScrollPane);
+    }
+
+    private void addAddButton(JButton addButton, AddListener addListener) {
+        addButton.setActionCommand(addString);
+        addButton.addActionListener(addListener);
+        addButton.setEnabled(false);
+    }
+
+    private void addRemoveButton() {
+        removeButton = new JButton(removeString);
+        removeButton.setActionCommand(removeString);
+        removeButton.addActionListener(new RemoveListener());
+    }
+
+    private void addLoadButton() {
+        loadButton = new JButton(loadString);
+        loadButton.setActionCommand(loadString);
+        loadButton.addActionListener(new LoadListener());
+    }
+
+    private void addSaveButton() {
+        saveButton = new JButton(saveString);
+        saveButton.setActionCommand(saveString);
+        saveButton.addActionListener(new SaveListener());
     }
 
     private void addEventListener(AddListener addListener) {
@@ -230,6 +263,11 @@ public class WishListGUI extends JPanel
             //so go ahead and remove whatever's selected.
             int index = list.getSelectedIndex();
             listModel.remove(index);
+            ImageIcon removePopUp = new ImageIcon("src/main/ui/productRemoved.png");
+            JOptionPane.showMessageDialog(null, removePopUp);
+
+            Product product = wishList.getShoppingWishList().get(wishList.getShoppingWishList().size() - 1);
+            wishList.decreaseQuantity(product, product.getQuantity());
 
             int size = listModel.getSize();
 
@@ -278,6 +316,12 @@ public class WishListGUI extends JPanel
 
             listModel.addElement(titleText.getText() + " $" + priceText.getText() + " x " + quantityText.getText()
                     + " star rating: " + starText.getText());
+
+            wishList.addProduct(titleText.getText(), Double.parseDouble(priceText.getText()),
+                    Integer.parseInt(quantityText.getText()));
+
+            Product product = wishList.getShoppingWishList().get(wishList.getShoppingWishList().size() - 1);
+            product.rateProduct(Integer.parseInt(starText.getText()));
 
             resetText();
 
@@ -343,15 +387,38 @@ public class WishListGUI extends JPanel
 
     class SaveListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
+            saveWishList();
+        }
+    }
+
+    // EFFECTS: saves the shopping wish list to file
+    private void saveWishList() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(wishList);
+            jsonWriter.close();
+        } catch (FileNotFoundException e) {
             // TODO
         }
     }
+
 
     class LoadListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             // TODO
         }
     }
+
+    // MODIFIES: this
+    // EFFECTS: loads shopping wish list from file
+    private void loadWishList() {
+        try {
+            wishList = jsonReader.read();
+        } catch (IOException e) {
+            // TODO
+        }
+    }
+
 
     //This method is required by ListSelectionListener.
     public void valueChanged(ListSelectionEvent e) {

@@ -1,14 +1,6 @@
-{"shoppingWishList": [
-    {
-        "quantity": 2,
-        "star": 0,
-        "price": 10,
-        "title": "book"
-    },
-    {
-        "quantity": 2,
-        "star": 0,
-        "price": 4,
-        "title": "pen"
-    }
-]}
+{"shoppingWishList": [{
+    "quantity": 1,
+    "star": 2,
+    "price": 12,
+    "title": "book"
+}]}
