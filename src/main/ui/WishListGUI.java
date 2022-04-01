@@ -44,10 +44,14 @@
 // Referenced code in JsonSerializationDemo-WorkRoomApp class
 // https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
 
+// Referenced code in AlarmSystem-ScreenPrinter class
+// https://github.students.cs.ubc.ca/CPSC210/AlarmSystem.git
+
 // Referenced code in:
 // https://docs.oracle.com/javase/8/docs/api/javax/swing/JOptionPane.html
 // https://stackoverflow.com/questions/6578205/swing-jlabel-text-change-on-the-running-application
 // https://docs.oracle.com/javase/tutorial/uiswing/events/intro.html
+// https://stackoverflow.com/questions/16295942/java-swing-adding-action-listener-for-exit-on-close
 
 package ui;
 
@@ -57,6 +61,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import javax.swing.*;
 import javax.swing.event.*;
+
+import model.Event;
+import model.EventLog;
 import model.Product;
 import model.ShoppingWishList;
 import persistence.JsonReader;
@@ -266,6 +273,15 @@ public class WishListGUI extends JPanel
     private static void createAndShowGUI() {
         JFrame frame = new JFrame("WishListGUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                for (Event next : EventLog.getInstance()) {
+                    System.out.println(next.toString());
+                }
+                e.getWindow().dispose();
+            }
+        });
         ui.WishListGUI wishListGUI = new ui.WishListGUI();
         frame.getContentPane().add(wishListGUI.getSplitPane());
 
@@ -344,7 +360,7 @@ public class WishListGUI extends JPanel
             wishList.addProduct(titleText.getText(), Double.parseDouble(priceText.getText()),
                     Integer.parseInt(quantityText.getText()));
 
-            Product product = wishList.getShoppingWishList().get(index);
+            Product product = wishList.getShoppingWishList().get(wishList.getShoppingWishList().size() - 1);
             product.rateProduct(Integer.parseInt(starText.getText()));
 
             resetText();

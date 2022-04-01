@@ -1,6 +1,9 @@
 // Referenced code in JsonSerializationDemo-WorkRoom class
 // https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
 
+// Referenced code in AlarmSystem-Alarm class
+// https://github.students.cs.ubc.ca/CPSC210/AlarmSystem.git
+
 package model;
 
 import org.json.JSONArray;
@@ -27,6 +30,7 @@ public class ShoppingWishList implements Writable {
         Product product = new Product(title, price);
         product.setQuantity(quantity);
         shoppingWishList.add(product);
+        EventLog.getInstance().logEvent(new Event("Product " + title + " added."));
     }
 
     // REQUIRES: quantity >= 1 AND product is contained in shoppingWishList
@@ -47,6 +51,7 @@ public class ShoppingWishList implements Writable {
             product.setQuantity(product.getQuantity() - quantity);
         } else {
             shoppingWishList.remove(product);
+            EventLog.getInstance().logEvent(new Event("Product " + product.getTitle() + " removed."));
         }
     }
 

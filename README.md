@@ -13,4 +13,26 @@ make shopper's lives easier, whether they are shopping online or in store.
 - As a user, I want to be able to select and rate a product in my shopping wish list on a scale of 0 to 5 star based on how much I need it.
 - As a user, I want to be able to save my shopping wish list to file
 - As a user, I want to be able to load my shopping wish list from file
+
+## Phase 4: Task 2:
+Fri Apr 01 03:20:13 PDT 2022<br>
+Product book added.<br>
+Fri Apr 01 03:20:20 PDT 2022<br>
+Product pie added.<br>
+Fri Apr 01 03:20:37 PDT 2022<br>
+Product pen added.<br>
+Fri Apr 01 03:20:41 PDT 2022<br>
+Product pie removed.<br>
+Fri Apr 01 03:20:46 PDT 2022<br>
+Product book removed.<br>
+Fri Apr 01 03:20:53 PDT 2022<br>
+Product laptop added.<br>
+Fri Apr 01 03:20:58 PDT 2022<br>
+Product pen removed.<br>
+Fri Apr 01 03:21:08 PDT 2022<br>
+Product phone added.<br>
+Fri Apr 01 03:21:14 PDT 2022<br>
+Product phone removed.<br>
+Fri Apr 01 03:21:18 PDT 2022<br>
+Product laptop removed.
  
