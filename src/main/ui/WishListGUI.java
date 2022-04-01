@@ -212,7 +212,7 @@ public class WishListGUI extends JPanel
     }
 
     // MODIFIES: this
-    // EFFECTS: sets up the scroll
+    // EFFECTS: sets up the scroll pane
     private JScrollPane getjScrollPane(JComponent topPane, JPanel buttonPane, JPanel combinePane,
                                        JButton left, JButton right) {
         buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
@@ -272,7 +272,7 @@ public class WishListGUI extends JPanel
     // EFFECTS: Constructs and display the GUI
     private static void createAndShowGUI() {
         JFrame frame = new JFrame("WishListGUI");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {

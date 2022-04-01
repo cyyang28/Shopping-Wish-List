@@ -35,4 +35,9 @@ Fri Apr 01 03:21:14 PDT 2022<br>
 Product phone removed.<br>
 Fri Apr 01 03:21:18 PDT 2022<br>
 Product laptop removed.
+
+## Phase 4: Task 3:
+To improve my design, I would:
+- Improve coupling and minimize duplicated code by extracting more methods. For example, some of my addButton methods in WishListGUI class have code clones, and it would help extract a method and replace them with call to the extracted method. I also have some duplicated code to fix within my addEventListener, addLabelText, and resetText helper methods in WishListGUI class. Making these changes in the future would make my code more readable and allow me to fix bugs more easily.
+
  
